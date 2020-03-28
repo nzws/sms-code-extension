@@ -3,17 +3,36 @@ import { writeText } from '../utils/clipboard';
 
 const codeRegex = /([0-9]{4,6}|[0-9]{2,3}-[0-9]{2,3})/im;
 let ws;
+let retryNum = 0;
 
 const setRunning = status => {
   // chrome.pageAction.setBadgeText({ text: status ? 'OK' : 'X' });
   chrome.storage.local.set({
-    isRunning: status
+    isRunning: status,
+    ...(status && {
+      statusCode: null
+    })
   });
   chrome.runtime.sendMessage('updateStatus');
 };
 
-const retry = () => {
+const successCodes = ['1000', '1012', '1013'];
+const retry = e => {
+  console.log('close:', e);
   setRunning(false);
+
+  chrome.storage.local.set({
+    statusCode: e.code
+  });
+
+  if (successCodes.indexOf(e.code) === -1) {
+    if (retryNum > 10) {
+      return;
+    }
+
+    retryNum++;
+    console.log('retry: ' + retryNum);
+  }
 
   setTimeout(() => {
     main();
@@ -41,7 +60,7 @@ const msg = ({ data }) => {
     title: `${smsData.title} - from SMS Code Extension`,
     message: smsData.body,
     type: 'basic',
-    iconUrl: './assets/notification-icon.png'
+    iconUrl: './assets/icon_128.png'
   });
 };
 
@@ -62,7 +81,6 @@ const main = async () => {
   ws.onmessage = msg;
   ws.onclose = retry;
   ws.onopen = () => setRunning(true);
-  ws.onerror = () => setRunning(false);
 };
 
 chrome.runtime.onMessage.addListener(msg => msg === 'restart' && main());

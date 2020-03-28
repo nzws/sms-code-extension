@@ -10,14 +10,16 @@
   "options_ui": {
     "page": "build/options/index.html"
   },
-  "permissions": [
-    "webRequest",
-    "storage",
-    "clipboardWrite",
-    "notifications",
-    "wss://stream.pushbullet.com/websocket/*"
-  ],
+  "permissions": ["webRequest", "storage", "clipboardWrite", "notifications"],
   "browser_action": {
-    "default_title": "sms-code-extension"
+    "default_title": "sms-code-extension",
+    "default_popup": "build/options/index.html"
+  },
+  "icons": {
+    "16": "assets/icon_16.png",
+    "32": "assets/icon_32.png",
+    "48": "assets/icon_48.png",
+    "128": "assets/icon_128.png",
+    "512": "assets/icon_512.png"
   }
 }
