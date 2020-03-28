@@ -1,0 +1,23 @@
+{
+  "name": "sms-code-extension",
+  "version": "1.0.0",
+  "manifest_version": 2,
+  "description": "An extension to receive SMS confirmation code using PushBullet.",
+  "background": {
+    "scripts": ["build/background/index.js"],
+    "persistent": true
+  },
+  "options_ui": {
+    "page": "build/options/index.html"
+  },
+  "permissions": [
+    "webRequest",
+    "storage",
+    "clipboardWrite",
+    "notifications",
+    "wss://stream.pushbullet.com/websocket/*"
+  ],
+  "browser_action": {
+    "default_title": "sms-code-extension"
+  }
+}
